@@ -11,18 +11,23 @@ def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
+            # Create a new user object but avoid saving it yet
             new_user = user_form.save(commit=False)
-            new_user.set_password(user_form.cleaned_data['password'])
+            # Set the chosen password
+            new_user.set_password(
+                user_form.cleaned_data['password'])
+            # Save the User object
             new_user.save()
-            return redirect('core:login')
+            # Create the user profile
+            return render(request,
+                          'core/register_done.html',
+                          {'new_user': new_user})
     else:
         user_form = UserRegistrationForm()
     return render(request,
                   'core/register.html',
                   {'user_form': user_form})
 
-
-#
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -42,7 +47,6 @@ def user_login(request):
     else:
         form = LoginForm()
     return render(request, 'core/login.html', {'form': form})
-#
 
 
 

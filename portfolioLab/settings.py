@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'portfolioLab.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'charity1',
+        'NAME': 'charity2',
         'USER' : 'postgres',
         'PASSWORD': 'coderslab',
         'HOST' : 'localhost'
@@ -114,3 +114,4 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
 
+AUTH_USER_MODEL = 'core.CustomUser'

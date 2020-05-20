@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+
+{% block content %}
+    <header>
+        {% include 'core/navbar_logged_out.html' %}
+    <p>Udało się zarejestrować. Możesz przejść do <a href="{% url 'core:login' %}">logowania</a></p>
+    </header>
+{% endblock %}
