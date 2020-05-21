@@ -1,27 +1,22 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.contrib import messages
-from .models import Institution, Donation, Category
-from .templates.core.forms import UserRegistrationForm, LoginForm
+from .models import Institution
+from core.forms import UserRegistrationForm, LoginForm
 
 
 def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
-            # Create a new user object but avoid saving it yet
             new_user = user_form.save(commit=False)
-            # Set the chosen password
             new_user.set_password(
                 user_form.cleaned_data['password'])
-            # Save the User object
             new_user.save()
-            # Create the user profile
-            return render(request,
-                          'core/register_done.html',
-                          {'new_user': new_user})
+            messages.success(request, "Konto dla użytkownika " + new_user.first_name + ' zostało utworzone')
+            return redirect('core:login')
     else:
         user_form = UserRegistrationForm()
     return render(request,
@@ -29,28 +24,37 @@ def register(request):
                   {'user_form': user_form})
 
 def user_login(request):
+    next = request.GET.get('next')
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
             user = authenticate(request,
-                                username=cd['email'],
+                                email=cd['email'],
                                 password=cd['password'])
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponse('Authenticated successfully')
-                else:
-                    return HttpResponse('Disabled account')
+                    if next:
+                        return redirect(next)
+                    return redirect ('core:home')
+
             else:
-                return HttpResponse('Invalid login')
+                messages.info(request, "Podany login lub hasło jest niepoprawne")
+
+        # return render(request, 'core/login.html', {'form': form})
+
     else:
         form = LoginForm()
     return render(request, 'core/login.html', {'form': form})
 
 
+def user_logout(request):
+    logout(request)
+    return redirect('core:home')
 
-def landing_page(request):
+
+def home(request):
     return render(request, 'core/index.html', {} )
 
 class FundsList(ListView):

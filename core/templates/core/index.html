@@ -6,7 +6,7 @@
 
     <header class="header--main-page">
 
-        {% include 'core/navbar_logged_out.html' %}
+        {% include 'core/navbar.html' %}
 
       <div class="slogan container container--90">
         <div class="slogan--item">
@@ -61,7 +61,7 @@
         </div>
       </div>
 
-      <a href="#" class="btn btn--large">Załóż konto</a>
+      <a href="{% url 'core:register' %}"  class="btn btn--large">Załóż konto</a>
     </section>
 
     <section id="about-us" class="about-us">
