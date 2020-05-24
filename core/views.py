@@ -1,10 +1,12 @@
+from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
+from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.contrib import messages
-from .models import Institution, Category
-from core.forms import UserRegistrationForm, LoginForm
+from .models import Institution, Category, CustomUser
+from core.forms import UserRegistrationForm, LoginForm, Donator, ContactForm
 
 
 def register(request):
@@ -68,7 +70,35 @@ def add_donation(request):
     if request.is_ajax():
         pass
 
-
-
     return render(request, 'core/form.html', {'categories':categories,
                             'institution_to_get':institution_to_get})
+
+
+def user_account(request):
+    app_user = request.user
+    form = Donator(instance=app_user)
+
+    if request.method == 'POST':
+        form = Donator(request.POST, instance=app_user)
+        if form.is_valid():
+            form.save()
+
+    return render(request, 'core/account.html', {'form': form})
+
+def contact_form(request):
+    form  = ContactForm()
+    sent= False
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            surname = form.cleaned_data['surname']
+            message = form.cleaned_data['message']
+            superusers_emails = CustomUser.objects.filter(is_superuser=True).values_list('email')
+            subject = f'Formularz kontaktowy od użytkownika: {name} {surname}'
+            send_mail(subject, message, settings.EMAIL_HOST_USER,
+                      superusers_emails, fail_silently=False)
+            sent = True
+        if sent:
+            redirect('core:home')
+    return render(request, 'core/base.html', {'form': form})

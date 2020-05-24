@@ -1,6 +1,6 @@
 from django.contrib.auth.views import LoginView
 from django.urls import path
-from core.views import home, register, user_login, user_logout, add_donation
+from core.views import home, register, user_login, user_logout, add_donation, user_account
 
 app_name = 'core'
 
@@ -12,5 +12,6 @@ urlpatterns = [
     path('login/', user_login, name='login'),
     path('logout/', user_logout, name='logout'),
     path('donation/', add_donation , name='donation'),
+    path('profile/', user_account, name='profile'),
 
 ]

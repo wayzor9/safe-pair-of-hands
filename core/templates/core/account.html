@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+{% load core_tags %}
+{% load static %}
+
+{% block content %}
+<header>
+    {% include 'core/navbar.html' %}
+
+    <section class="login-page">
+      <h2>Twój profil</h2>
+      <form method="POST" action="">
+         <div class="form-group">
+             {% csrf_token %}
+             {{ form.as_p }}
+    <button type="submit" value="wyśilij">Zmień dane</button>
+         </div>
+      </form>
+    </section>
+</header>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+{#    <header class="header--main-page">#}
+{##}
+{#        {% include 'core/navbar.html' %}#}
+{##}
+{#      <div class="slogan container container--90">#}
+{#          <h1>#}
+{#            Twój profil<br />#}
+{#          </h1><br>#}
+{#            <div class="form-group">#}
+{#            <form method="POST" action="">#}
+{#             {% csrf_token %}#}
+{#             {{ form.as_p }}#}
+{#             <button type="submit" value="Zmień dane">Zmień</button>#}
+{#            </form>#}
+{#            </div>#}
+{#      </div>#}
+{#    </header>#}
+
+
+{#{% endblock %}#}

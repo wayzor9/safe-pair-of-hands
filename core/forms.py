@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+
 from core.models import CustomUser
 
 
@@ -25,7 +27,7 @@ class LoginForm(forms.Form):
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(label='Hasło',
-                               widget=forms.PasswordInput)
+                               widget=forms.PasswordInput, validators=[validate_password])
     password2 = forms.CharField(label='Powtórz Hasło',
                                 widget=forms.PasswordInput)
 
@@ -39,6 +41,17 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError('Hasła nie są takie same')
         elif len(cd['password']) < 8:
             raise forms.ValidationError("Password requires at least 8 characters")
-        # elif '1234567890' not in cd['password']:
-        #     raise forms.ValidationError("Hasło musi posiadać przynajmniej jeden znak liczbowy")
+
         return super(UserRegistrationForm, self).clean(*args, **kwargs)
+
+
+class Donator(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('first_name', 'last_name', 'email')
+
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=23)
+    surname = forms.CharField(max_length=33)
+    message = forms.Textarea()
+
