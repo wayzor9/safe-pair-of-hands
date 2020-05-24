@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from core.models import CustomUser
 
 
-
-
 class LoginForm(forms.Form):
     email = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
@@ -35,12 +33,12 @@ class UserRegistrationForm(forms.ModelForm):
         model = CustomUser
         fields = ('first_name', 'last_name','email')
 
-    def clean_password2(self):
+    def clean_password2(self, *args, **kwargs):
         cd = self.cleaned_data
         if cd['password'] != cd['password2']:
             raise forms.ValidationError('Hasła nie są takie same')
         elif len(cd['password']) < 8:
             raise forms.ValidationError("Password requires at least 8 characters")
-        elif "1234567890" not in cd['password']:
-            raise forms.ValidationError("Hasło musi posiadać przynajmniej jeden znak liczbowy")
+        # elif '1234567890' not in cd['password']:
+        #     raise forms.ValidationError("Hasło musi posiadać przynajmniej jeden znak liczbowy")
         return super(UserRegistrationForm, self).clean(*args, **kwargs)

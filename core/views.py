@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.contrib import messages
-from .models import Institution
+from .models import Institution, Category
 from core.forms import UserRegistrationForm, LoginForm
 
 
@@ -57,9 +57,18 @@ def user_logout(request):
 def home(request):
     return render(request, 'core/index.html', {} )
 
-class FundsList(ListView):
-    queryset = Institution.objects.filter(type='Fundacja')
-    context_object_name = 'fundations'
-    paginate_by = 2
-    template_name = 'core/index.html'
 
+def add_donation(request):
+
+    categories = Category.objects.all()
+    # cat_ids = request.GET.getlist('category')
+    # institution_to_get = Institution.objects.filter(categories__id__in=cat_ids)
+    institution_to_get = Institution.objects.all()
+
+    if request.is_ajax():
+        pass
+
+
+
+    return render(request, 'core/form.html', {'categories':categories,
+                            'institution_to_get':institution_to_get})
