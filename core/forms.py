@@ -1,8 +1,5 @@
 from django import forms
 from django.contrib.auth import get_user_model, authenticate
-from django.contrib.auth.models import User
-from django.contrib.auth.password_validation import validate_password
-
 from core.models import CustomUser
 
 
@@ -27,7 +24,7 @@ class LoginForm(forms.Form):
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(label='Hasło',
-                               widget=forms.PasswordInput, validators=[validate_password])
+                               widget=forms.PasswordInput)
     password2 = forms.CharField(label='Powtórz Hasło',
                                 widget=forms.PasswordInput)
 

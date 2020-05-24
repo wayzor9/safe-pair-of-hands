@@ -85,6 +85,8 @@ def user_account(request):
 
     return render(request, 'core/account.html', {'form': form})
 
+
+
 def contact_form(request):
     form  = ContactForm()
     sent= False
