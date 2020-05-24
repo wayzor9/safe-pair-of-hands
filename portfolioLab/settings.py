@@ -19,13 +19,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'core.apps.CoreConfig',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [
@@ -115,3 +116,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
 
 AUTH_USER_MODEL = 'core.CustomUser'
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'wayzor9@gmail.com'
+EMAIL_HOST_PASSWORD = 'Homaribakardi7981'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

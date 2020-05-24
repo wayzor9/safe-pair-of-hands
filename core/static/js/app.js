@@ -242,6 +242,9 @@ document.addEventListener("DOMContentLoaded", function() {
      *
      * TODO: validation, send data to server
      */
+
+    // $(form).serializeArray(); post,
+
     submit(e) {
       e.preventDefault();
       this.currentStep++;

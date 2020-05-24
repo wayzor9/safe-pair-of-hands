@@ -27,7 +27,7 @@
         </div>
 
         <div class="stats--item">
-          <em>{% total_organizations %}</em>
+          <em>{% get_total_organizations %}</em>
           <h3>Wspartych organizacji</h3>
           <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laboriosam magnam, sint nihil cupiditate quas quam.</p>
         </div>
@@ -85,7 +85,7 @@
       <!-- SLIDE 1 -->
       <div class="help--slides active" data-id="1">
         <p>W naszej bazie znajdziesz listę zweryfikowanych Fundacji, z którymi współpracujemy. Możesz sprawdzić czym się zajmują, komu pomagają i czego potrzebują.</p>
-          {% show_fundations as fundations %}
+{#          {% show_fundations as fundations %}#}
           {% for fund in fundations %}
         <ul class="help--slides-items">
 
@@ -99,13 +99,19 @@
         </ul>
 {% endfor %}
 
-          <!-- Pagination
-        <ul class="help--slides-pagination">
-          <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-          <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-          <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>
-        </ul>
-        -->
+          <div class=help--slides-pagination">
+              <span>
+                  {% if funds.has_previous %}
+                      <a href="?page={{ funds.previous_page_number }}" class="btn btn--small btn--without-border">Previous</a>
+                  {% endif %}
+                  <span class="current">
+                      Page {{ funds.number }} of {{ funds.paginator.num_pages }}.
+                  </span>
+                  {% if funds.has_next %}
+                      <a href="?page={{ funds.next_page_number }}" class="btn btn--small btn--without-border">Next</a>
+                  {% endif %}
+              </span>
+          </div>
       </div>
 
 
@@ -115,7 +121,7 @@
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Hic officiis mollitia dolor, neque aspernatur accusamus debitis. Ducimus, officia. Quia, sunt illum! Non iste placeat ab ipsum alias
           quos suscipit corporis!
         </p>
-          {% show_ngos as ngos %}
+{#          {% show_ngos as ngos %}#}
           {% for ngo in ngos %}
         <ul class="help--slides-items">
           <li>
@@ -127,6 +133,8 @@
           </li>
         </ul>
 {% endfor %}
+
+
 
         <!-- Pagination
         <ul class="help--slides-pagination">
@@ -142,8 +150,8 @@
       <!-- SLIDE 3 -->
       <div class="help--slides" data-id="3">
         <p>Lorem ipsum dolor sit amet, his ocurreret persequeris ea, ad utinam laudem duo. Verterem adipisci partiendo eos ne, ea his reque quaeque recteque, ne quo lobortis intellegam.</p>
-        {% show_local_raise as raises %}
-          {% for raise in raises %}
+{#        {% show_local_raise as raises %}#}
+          {% for raise in local_raises %}
           <ul class="help--slides-items">
           <li>
             <div class="col">
