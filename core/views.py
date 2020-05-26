@@ -67,11 +67,14 @@ def add_donation(request):
     # institution_to_get = Institution.objects.filter(categories__id__in=cat_ids)
     institution_to_get = Institution.objects.all()
 
-    if request.is_ajax():
+    return render(request, 'core/form.html', {'categories': categories,
+                                              'institution_to_get': institution_to_get})
+
+def create_donation(request):
+
+    if request.is_ajax() and request.method=='POST':
         pass
 
-    return render(request, 'core/form.html', {'categories':categories,
-                            'institution_to_get':institution_to_get})
 
 
 def user_account(request):

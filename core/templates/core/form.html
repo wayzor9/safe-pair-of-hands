@@ -58,7 +58,7 @@
       <div class="form--steps-container">
         <div class="form--steps-counter">Krok <span>1</span>/5</div>
 
-        <form action="form-confirmation.html" method="post">
+        <form id="donation_form" action="form-confirmation.html" method="post">
           <!-- STEP 1: class .active is switching steps -->
           <div data-step="1" class="active">
             <h3>Zaznacz co chcesz oddać:</h3>
@@ -66,12 +66,13 @@
             <div class="form-group form-group--checkbox">
               <label>
                 <input
+                        id="categories"
                   type="checkbox"
                   name="categories"
                   value="{{ category.id }}"
                 />
                 <span class="checkbox"></span>
-                <span class="description"
+                <span  class="description"
                   >{{ category.name }}</span
                 >
               </label>
@@ -91,7 +92,7 @@
             <div class="form-group form-group--inline">
               <label>
                 Liczba 60l worków:
-                <input type="number" name="bags" step="1" min="1" />
+                <input id="bags" type="number" name="bags" step="1" min="1" />
               </label>
             </div>
 
@@ -110,7 +111,7 @@
                 <input type="radio" name="organization" value="old" />
                 <span class="checkbox radio"></span>
                 <span class="description">
-                  <div class="title">{{ institution.name}}”</div>
+                  <div id="institution" class="title">{{ institution.name}}”</div>
                   <div class="subtitle">
                     {{ institution.description}}
                   </div>
@@ -132,7 +133,7 @@
               <div class="form-section--column">
                 <h4>Adres odbioru</h4>
                 <div class="form-group form-group--inline">
-                  <label> Ulica <input type="text" name="address" /> </label>
+                  <label> Ulica <input id="address" type="text" name="address" /> </label>
                 </div>
 
                 <div class="form-group form-group--inline">
