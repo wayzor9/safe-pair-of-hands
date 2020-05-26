@@ -1,13 +1,18 @@
 from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.views import LoginView
-from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail, EmailMessage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import ListView
 from django.contrib import messages
 from .models import Institution, Category, CustomUser
 from core.forms import UserRegistrationForm, Donator
+from .tokens import account_activation_token
 
 
 def register(request):
@@ -18,15 +23,43 @@ def register(request):
             new_user.set_password(
                 user_form.cleaned_data['password'])
             new_user.save()
-            messages.success(request, "Konto dla użytkownika " + new_user.first_name + ' zostało utworzone')
-            return redirect('core:login')
+            current_site = get_current_site(request)
+            mail_subject = 'Aktywuj swoje konto na "Oddam w Dobre Ręce"'
+            message = render_to_string('core/acc_active_email.html', {
+                'user': new_user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(new_user.pk)),
+                'token': account_activation_token.make_token(new_user),
+            })
+            to_email = user_form.cleaned_data.get('email')
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
+            return HttpResponse('Please confirm your email address to complete the registration')
+            # messages.success(request, "Konto dla użytkownika " + new_user.first_name + ' zostało utworzone')
+            # return redirect('core:login')
     else:
         user_form = UserRegistrationForm()
     return render(request,
                   'core/register.html',
                   {'user_form': user_form})
 
-
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        # return redirect('home')
+        messages.success(request, 'Dziękujemy za potwierdzenie. Możesz się zalogować')
+        return redirect('core:login')
+    else:
+        return HttpResponse('Activation link is invalid!')
 
 
 # def user_login(request):
