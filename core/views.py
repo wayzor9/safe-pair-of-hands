@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.views import LoginView
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.contrib import messages
 from .models import Institution, Category, CustomUser
-from core.forms import UserRegistrationForm, LoginForm, Donator, ContactForm
+from core.forms import UserRegistrationForm, Donator
 
 
 def register(request):
@@ -25,30 +26,31 @@ def register(request):
                   'core/register.html',
                   {'user_form': user_form})
 
-def user_login(request):
-    next = request.GET.get('next')
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = authenticate(request,
-                                email=cd['email'],
-                                password=cd['password'])
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    if next:
-                        return redirect(next)
-                    return redirect ('core:home')
 
-            else:
-                messages.info(request, "Podany login lub hasło jest niepoprawne")
 
-        # return render(request, 'core/login.html', {'form': form})
 
-    else:
-        form = LoginForm()
-    return render(request, 'core/login.html', {'form': form})
+# def user_login(request):
+#     next = request.GET.get('next')
+#     if request.method == 'POST':
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             cd = form.cleaned_data
+#             user = authenticate(request,
+#                                 email=cd['email'],
+#                                 password=cd['password'])
+#             if user is not None:
+#                 if user.is_active:
+#                     login(request, user)
+#                     if next:
+#                         return redirect(next)
+#                     return redirect ('core:home')
+#
+#             else:
+#                 messages.info(request, "Podany login lub hasło jest niepoprawne")
+#
+#     else:
+#         form = LoginForm()
+#     return render(request, 'core/login.html', {'form': form})
 
 
 def user_logout(request):
@@ -91,19 +93,19 @@ def user_account(request):
 
 
 def contact_form(request):
-    form  = ContactForm()
+    # form  = ContactForm()
     sent= False
     if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            surname = form.cleaned_data['surname']
-            message = form.cleaned_data['message']
-            superusers_emails = CustomUser.objects.filter(is_superuser=True).values_list('email')
-            subject = f'Formularz kontaktowy od użytkownika: {name} {surname}'
-            send_mail(subject, message, settings.EMAIL_HOST_USER,
-                      superusers_emails, fail_silently=False)
-            sent = True
+        # form = ContactForm(request.POST)
+        # if form.is_valid():
+        name = request.post['name']
+        surname = request.post['surname']
+        message = request.post['message']
+        superusers_emails = CustomUser.objects.filter(is_superuser=True).values_list('email')
+        subject = f'Formularz kontaktowy od użytkownika: {name} {surname}'
+        send_mail(subject, message, settings.EMAIL_HOST_USER,
+                  superusers_emails, fail_silently=False)
+        sent = True
         if sent:
             redirect('core:home')
-    return render(request, 'core/base.html', {'form': form})
+    # return render(request, 'core/base.html', {})

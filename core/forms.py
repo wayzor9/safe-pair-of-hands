@@ -1,25 +1,27 @@
 from django import forms
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth import authenticate
+from django.contrib.auth.forms import AuthenticationForm
+
 from core.models import CustomUser
 
 
-class LoginForm(forms.Form):
-    email = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput)
-
-    def clean(self, *args, **kwargs):
-        email = self.cleaned_data['email']
-        password = self.cleaned_data['password']
-
-        if email and password:
-            user = authenticate(email=email, password=password)
-            if not user:
-                raise forms.ValidationError('Nie ma takiego użytkownika :(')
-            if not user.check_password(password):
-                raise forms.ValidationError('Podany email lub hasło są niepoprawne')
-            if not user.is_active:
-                raise forms.ValidationError('Użytkownik aktywny')
-        return super(LoginForm, self).clean(*args, **kwargs)
+# class LoginView(AuthenticationForm):
+#     email = forms.CharField()
+#     password = forms.CharField(widget=forms.PasswordInput)
+#
+#     def clean(self, *args, **kwargs):
+#         email = self.cleaned_data['email']
+#         password = self.cleaned_data['password']
+#
+#         if email and password:
+#             user = authenticate(email=email, password=password)
+#             if not user:
+#                 raise forms.ValidationError('Nie ma takiego użytkownika :(')
+#             if not user.check_password(password):
+#                 raise forms.ValidationError('Podany email lub hasło są niepoprawne')
+#             if not user.is_active:
+#                 raise forms.ValidationError('Użytkownik aktywny')
+#         return super(AuthenticationForm, self).clean(*args, **kwargs)
 
 
 class UserRegistrationForm(forms.ModelForm):
@@ -47,8 +49,8 @@ class Donator(forms.ModelForm):
         model = CustomUser
         fields = ('first_name', 'last_name', 'email')
 
-class ContactForm(forms.Form):
-    name = forms.CharField(max_length=23)
-    surname = forms.CharField(max_length=33)
-    message = forms.Textarea()
+# class ContactForm(forms.Form):
+#     name = forms.CharField(max_length=23)
+#     surname = forms.CharField(max_length=33)
+#     message = forms.Textarea()
 
