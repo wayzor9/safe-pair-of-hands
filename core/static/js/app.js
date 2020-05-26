@@ -235,31 +235,35 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$step.parentElement.hidden = this.currentStep >= 6;
 
       // TODO: get data from inputs and show them in summary
-      $("button").click(function() {
-        var x = $("form").serializeArray();
-        $.each(x, function (i, field) {
-          $.ajax({
-            type: 'POST',
-            url: '',
-            data: {
-              categories: $('#categories').val(),
-              bags: $('#bags').val(),
-              // filtrowanie instytucji po kategorii???
-              institution: $('#institution').val(),
-              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-            }
-          })
-        })
-      })
+      // $("button").click(function() {
+
+        // $.each(x, function (i, field) {
+          // $.ajax({
+      //       type: 'POST',
+      //       url: '',
+      //       data: {
+      //         categories: $('#categories').val(),
+      //         bags: $('#bags').val(),
+      //         // filtrowanie instytucji po kategorii???
+      //         institution: $('#institution').val(),
+      //         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+      //       }
+      //     })
+      //   })
+      // })
     }
     /**
      * Submit form
      *
      * TODO: validation, send data to server
      */
+
     submit(e) {
       e.preventDefault();
       this.currentStep++;
+      console.log(this.currentStep)
+          var x = $("form").serializeArray();
+      console.log(x)
       this.updateForm();
     }
   }

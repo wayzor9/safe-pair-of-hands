@@ -1,4 +1,6 @@
 {% autoescape off %}
-Dzień dobry {{ request.user.first_name }},
+Cześć {{ user.first_name|title }}!,
 Kliknij w poniższy link aby potwierdzić rejestrację ,http://{{ domain }}{% url 'core:activate' uidb64=uid token=token %}
+    Pozdrawiamy,
+    Zespół Oddam w dobre ręce
 {% endautoescape %}

@@ -49,8 +49,8 @@ class Donator(forms.ModelForm):
         model = CustomUser
         fields = ('first_name', 'last_name', 'email')
 
-# class ContactForm(forms.Form):
-#     name = forms.CharField(max_length=23)
-#     surname = forms.CharField(max_length=33)
-#     message = forms.Textarea()
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=23)
+    surname = forms.CharField(max_length=33)
+    message = forms.Textarea()
 

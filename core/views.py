@@ -1,17 +1,15 @@
 from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.views import LoginView
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail, EmailMessage
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.views.generic import ListView
 from django.contrib import messages
 from .models import Institution, Category, CustomUser
-from core.forms import UserRegistrationForm, Donator
+from core.forms import UserRegistrationForm, Donator, ContactForm
 from .tokens import account_activation_token
 
 
@@ -36,7 +34,8 @@ def register(request):
                 mail_subject, message, to=[to_email]
             )
             email.send()
-            return HttpResponse('Please confirm your email address to complete the registration')
+            messages.success(request, "Wysłaliśmy na Twój adres email link aktywacyjny do konta.")
+            return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
             # messages.success(request, "Konto dla użytkownika " + new_user.first_name + ' zostało utworzone')
             # return redirect('core:login')
     else:
@@ -59,7 +58,7 @@ def activate(request, uidb64, token):
         messages.success(request, 'Dziękujemy za potwierdzenie. Możesz się zalogować')
         return redirect('core:login')
     else:
-        return HttpResponse('Activation link is invalid!')
+        return HttpResponse('Link aktywacyjny jest nieważny')
 
 
 # def user_login(request):
@@ -113,11 +112,11 @@ def create_donation(request):
 
 
 def user_account(request):
-    app_user = request.user
-    form = Donator(instance=app_user)
+    user = request.user
+    form = Donator(instance=user)
 
     if request.method == 'POST':
-        form = Donator(request.POST, instance=app_user)
+        form = Donator(request.POST, instance=user)
         if form.is_valid():
             form.save()
 
@@ -126,19 +125,15 @@ def user_account(request):
 
 
 def contact_form(request):
-    # form  = ContactForm()
-    sent= False
+
+    form  = ContactForm()
     if request.method == 'POST':
-        # form = ContactForm(request.POST)
-        # if form.is_valid():
-        name = request.post['name']
-        surname = request.post['surname']
-        message = request.post['message']
-        superusers_emails = CustomUser.objects.filter(is_superuser=True).values_list('email')
-        subject = f'Formularz kontaktowy od użytkownika: {name} {surname}'
-        send_mail(subject, message, settings.EMAIL_HOST_USER,
-                  superusers_emails, fail_silently=False)
-        sent = True
-        if sent:
-            redirect('core:home')
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            superusers_emails = CustomUser.objects.filter(is_superuser=True).values_list('email')
+            subject = f"Formularz kontaktowy od użytkownika: {cd['name']} {cd['surname']}"
+            send_mail(subject, cd['message'], settings.EMAIL_HOST_USER,
+                      superusers_emails)
+            return redirect('core:home')
     # return render(request, 'core/base.html', {})
