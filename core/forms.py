@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm
 
-from core.models import CustomUser
+from core.models import CustomUser, Donation
 
 
 # class LoginView(AuthenticationForm):
@@ -49,8 +49,14 @@ class Donator(forms.ModelForm):
         model = CustomUser
         fields = ('first_name', 'last_name', 'email')
 
+
 class ContactForm(forms.Form):
     name = forms.CharField(max_length=23)
     surname = forms.CharField(max_length=33)
-    message = forms.Textarea()
+    message = forms.CharField()
 
+
+class DonationForm():
+    class Meta:
+        model = Donation
+        exclude = ['user', 'categories', 'institution']

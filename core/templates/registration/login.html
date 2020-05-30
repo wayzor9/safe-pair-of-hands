@@ -12,7 +12,7 @@
          <div class="form-group">
              {% csrf_token %}
              {{ form.as_p }}
-         <a href="{% url 'core:password_reset' %}" class="btn btn--small btn--without-border reset-password">Przypomnij hasło</a>
+         <a href="{% url 'password_reset' %}" class="btn btn--small btn--without-border reset-password">Przypomnij hasło</a>
              <br>
              {% for message in messages %}
                  <p> <strong style="color: green">{{ message }}</strong> </p>

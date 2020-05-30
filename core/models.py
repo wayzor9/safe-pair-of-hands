@@ -59,4 +59,4 @@ class Donation(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None)
 
     def __str__(self):
-        return f"Dar dla {self.institution}, liczba worków: {self.quantity}"
+        return self.categories.all()

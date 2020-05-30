@@ -5,9 +5,10 @@
 {% block content %}
 <header>
     {% include 'core/navbar.html' %}
-
+</header>
     <section class="login-page">
       <h2>Twój profil</h2>
+    <div>
       <form method="POST" action="">
          <div class="form-group">
              {% csrf_token %}
@@ -15,8 +16,33 @@
     <button type="submit" value="wyśilij">Zmień dane</button>
          </div>
       </form>
+</div>
+     <h2>Twoje Dary</h2>
+    <div >
+        <table>
+       <thead style="font-weight: bold">
+       <th> Liczba worków </th>
+       <th>Beneficjent</th>
+       <th>Kategoria</th>
+       <th>Odbiór</th>
+       </thead>
+{% for item in user_donations %}
+       <tr>
+           <td>{{ item.quantity }}</td>
+           <td> {{item.institution }}</td>
+           <td> {% for category in item.categories.all %}<li>{{category| join:","}}</li>{% endfor %}</td>
+           <td> {{item.pick_up_date }}</td>
+       </tr>
+    {% empty %}
+           <tr>
+               <td colspan="3"><h4>Lista darowizn jest pusta. Czekamy na Twój pierwszy przekazany dar!</h4>
+               </td>
+           </tr>
+        {% endfor %}
+    </table>
+    </div>
     </section>
-</header>
+
 {% endblock %}
 
 

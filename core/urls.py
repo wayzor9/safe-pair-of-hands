@@ -1,10 +1,10 @@
 from django.urls import path, include
-from core.views import home, register, user_logout, add_donation, user_account, activate, contact_form
+from core.views import home, register, user_logout, add_donation, user_account, activate, contact_form, create_donation, \
+    form_confirmation
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, \
     PasswordResetCompleteView
 
 app_name = 'core'
-
 
 urlpatterns = [
 
@@ -25,6 +25,10 @@ urlpatterns = [
     path('contact/', contact_form, name='contact_form'),
     path('', home, name='home'),
     path('donation/', add_donation , name='donation'),
+    path('create_donation/', create_donation, name = 'create_donation'),
+
+    path('form_confirmation/', form_confirmation, name = "form_confirmation"),
+
     path('profile/', user_account, name='profile'),
 
 ]

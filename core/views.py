@@ -8,8 +8,10 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib import messages
-from .models import Institution, Category, CustomUser
-from core.forms import UserRegistrationForm, Donator, ContactForm
+from django.views.generic import ListView
+
+from .models import Institution, Category, CustomUser, Donation
+from core.forms import UserRegistrationForm, Donator, ContactForm, DonationForm
 from .tokens import account_activation_token
 
 
@@ -96,32 +98,69 @@ def home(request):
 
 def add_donation(request):
 
+    form = DonationForm()
     categories = Category.objects.all()
     # cat_ids = request.GET.getlist('category')
     # institution_to_get = Institution.objects.filter(categories__id__in=cat_ids)
     institution_to_get = Institution.objects.all()
 
-    return render(request, 'core/form.html', {'categories': categories,
+
+    return render(request, 'core/form.html', {'form':form, 'categories': categories,
                                               'institution_to_get': institution_to_get})
 
 def create_donation(request):
 
-    if request.is_ajax() and request.method=='POST':
-        pass
+    if request.is_ajax() and request.method =='POST':
 
+        quantity = request.POST.get('bags')
+        address = request.POST.get('address')
+        zip_code = request.POST.get('postcode')
+        phone_number = request.POST.get('phone')
+        pick_up_date = request.POST.get('data')
+        pick_up_time = request.POST.get('time')
+        pick_up_comment = request.POST.get('more_info')
+
+        user = request.user
+
+        donation = Donation.objects.create(quantity=quantity, address=address, phone_number=phone_number,
+                                           zip_code=zip_code, pick_up_date=pick_up_date, pick_up_time=pick_up_time,
+                                           pick_up_comment=pick_up_comment, user=user)
+
+        categories_ids = request.POST.getlist('categories')
+        categories = Category.objects.filter(id__in=categories_ids)
+        donation.categories.set(categories)
+
+        institution_id = request.POST.getlist('organization')
+        institution = Category.objects.filter(id__in=institution_id)
+        donation.categories.set(institution)
+
+    return redirect('core:form_confirmation')
+
+
+
+def form_confirmation(request):
+
+    return render(request, 'core/form-confirmation.html', {})
 
 
 def user_account(request):
     user = request.user
     form = Donator(instance=user)
+    user_donations = Donation.objects.filter(user=user)
 
     if request.method == 'POST':
         form = Donator(request.POST, instance=user)
         if form.is_valid():
             form.save()
 
-    return render(request, 'core/account.html', {'form': form})
+    return render(request, 'core/account.html', {'form': form, 'user_donations': user_donations})
 
+#
+# def show_user_donation(request):
+#     user= request.user
+#     user_donations= Donation.objects.filter(user=user)
+#
+#     return Donation.objects.filter(user__user= self.request.user)
 
 
 def contact_form(request):
@@ -131,9 +170,11 @@ def contact_form(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            superusers_emails = CustomUser.objects.filter(is_superuser=True).values_list('email')
+            superusers_emails = CustomUser.objects.filter(is_superuser=True).values_list('email', flat=True)
             subject = f"Formularz kontaktowy od użytkownika: {cd['name']} {cd['surname']}"
+            print(subject)
+            print(cd)
             send_mail(subject, cd['message'], settings.EMAIL_HOST_USER,
                       superusers_emails)
             return redirect('core:home')
-    # return render(request, 'core/base.html', {})
+    return render(request, 'core/base.html', {'form':form})

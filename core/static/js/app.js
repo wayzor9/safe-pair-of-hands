@@ -235,22 +235,8 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$step.parentElement.hidden = this.currentStep >= 6;
 
       // TODO: get data from inputs and show them in summary
-      // $("button").click(function() {
 
-        // $.each(x, function (i, field) {
-          // $.ajax({
-      //       type: 'POST',
-      //       url: '',
-      //       data: {
-      //         categories: $('#categories').val(),
-      //         bags: $('#bags').val(),
-      //         // filtrowanie instytucji po kategorii???
-      //         institution: $('#institution').val(),
-      //         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-      //       }
-      //     })
-      //   })
-      // })
+
     }
     /**
      * Submit form
@@ -258,12 +244,25 @@ document.addEventListener("DOMContentLoaded", function() {
      * TODO: validation, send data to server
      */
 
+    create_post(){
+      var form = $('#donation_form').serializeArray()
+      // var token =  $('input[name="csrfToken"]').attr('value');
+      // console.log(form);
+      console.log(form)
+
+      $.ajax({
+        data : form,
+        url : /create_donation/,
+        type : 'POST',
+        // headers: {
+        //   'X-CSRF-Token': token
+        // },
+      })
+    }
     submit(e) {
       e.preventDefault();
       this.currentStep++;
-      console.log(this.currentStep)
-          var x = $("form").serializeArray();
-      console.log(x)
+      this.create_post();
       this.updateForm();
     }
   }
