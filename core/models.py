@@ -3,6 +3,7 @@ from django.db import models
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from portfolioLab import settings
@@ -57,6 +58,12 @@ class Donation(models.Model):
     pick_up_time = models.TimeField()
     pick_up_comment = models.TextField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None)
+    is_taken = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.categories.all()
+        return f'{self.quantity} dla {self.institution}'
+
+    def get_taken_item_url(self):
+        return reverse("core:taken", kwargs={
+            'id':self.id
+        })

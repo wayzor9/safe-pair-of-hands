@@ -39,8 +39,9 @@ class UserRegistrationForm(forms.ModelForm):
         if cd['password'] != cd['password2']:
             raise forms.ValidationError('Hasła nie są takie same')
         elif len(cd['password']) < 8:
-            raise forms.ValidationError("Password requires at least 8 characters")
-
+            raise forms.ValidationError("Hasło musi mieć przynajmniej 8 znaków.")
+        elif not any(c.isdigit() for c in cd['password']):
+            raise forms.ValidationError("Hasło musi zawierać przynajmniej jedną cyfrę.")
         return super(UserRegistrationForm, self).clean(*args, **kwargs)
 
 
@@ -51,12 +52,22 @@ class Donator(forms.ModelForm):
 
 
 class ContactForm(forms.Form):
-    name = forms.CharField(max_length=23)
-    surname = forms.CharField(max_length=33)
-    message = forms.CharField()
+    name = forms.CharField(max_length=23, required=True)
+    surname = forms.CharField(max_length=33, required=True)
+    message = forms.CharField(widget=forms.Textarea, required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get("name")
+        surname = cleaned_data.get("surname")
+        message = cleaned_data.get("message")
+        if not name and surname and message:
+                raise forms.ValidationError(
+                    'Wszystkie pola są wymagane')
 
 
-class DonationForm():
+class DonationForm(forms.ModelForm):
     class Meta:
         model = Donation
-        exclude = ['user', 'categories', 'institution']
+        fields = '__all__'
+        exclude = ['categories', 'institution', 'user']

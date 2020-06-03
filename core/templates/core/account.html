@@ -13,64 +13,62 @@
          <div class="form-group">
              {% csrf_token %}
              {{ form.as_p }}
-    <button type="submit" value="wyśilij">Zmień dane</button>
+    <button type="submit" value="wyślij">Zmień dane</button>
          </div>
       </form>
 </div>
-     <h2>Twoje Dary</h2>
-    <div >
-        <table>
-       <thead style="font-weight: bold">
-       <th> Liczba worków </th>
-       <th>Beneficjent</th>
-       <th>Kategoria</th>
-       <th>Odbiór</th>
-       </thead>
-{% for item in user_donations %}
-       <tr>
-           <td>{{ item.quantity }}</td>
-           <td> {{item.institution }}</td>
-           <td> {% for category in item.categories.all %}<li>{{category| join:","}}</li>{% endfor %}</td>
-           <td> {{item.pick_up_date }}</td>
-       </tr>
-    {% empty %}
+
+        <h2>Twoje Dary</h2>
+        <div >
+            <table>
+                <thead style="font-weight: bold">
+                <tr>
+                   <th> Liczba worków </th>
+                   <th>Beneficjent</th>
+                   <th>Kategoria</th>
+                   <th>Data odbioru</th>
+                   <th>Dodaj do archiwum</th>
+                </tr>
+                </thead>
+            <tbody>
+
+                {% for item in not_taken %}
+                    <tr>
+                        <td>{{ item.quantity }}</td>
+                        <td> {{item.institution }}</td>
+                        <td> {% for category in item.categories.all %}<li>{{category| join:","}}</li>{% endfor %}</td>
+                        <td> {{item.pick_up_date }}</td>
+                        <td> <a href="{{ item.get_taken_item_url }}"><i class="fas fa-check"></i></a> </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <h4>Brak aktywnych darów!</h4>
+                    </tr>
+                {% endfor %}
+
+            {% for item in taken %}
+                {% if forloop.first %}
+                <tr style="text-align: center">
+                <td colspan=5><h1>Archiwum</h1></td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>{{ item.quantity }}</td>
+                    <td> {{item.institution }}</td>
+                    <td> {% for category in item.categories.all %}<li>{{category| join:","}}</li>{% endfor %}</td>
+                    <td> {{item.pick_up_date }}</td>
+                    <td> Odebrano</td>
+                </tr>
+            {% empty %}
            <tr>
-               <td colspan="3"><h4>Lista darowizn jest pusta. Czekamy na Twój pierwszy przekazany dar!</h4>
-               </td>
+               <h4>Brak darów w archiwum!</h4>
            </tr>
-        {% endfor %}
+    {% endfor %}
+{#            </div>#}
+
+            </tbody>
     </table>
     </div>
     </section>
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-{#    <header class="header--main-page">#}
-{##}
-{#        {% include 'core/navbar.html' %}#}
-{##}
-{#      <div class="slogan container container--90">#}
-{#          <h1>#}
-{#            Twój profil<br />#}
-{#          </h1><br>#}
-{#            <div class="form-group">#}
-{#            <form method="POST" action="">#}
-{#             {% csrf_token %}#}
-{#             {{ form.as_p }}#}
-{#             <button type="submit" value="Zmień dane">Zmień</button>#}
-{#            </form>#}
-{#            </div>#}
-{#      </div>#}
-{#    </header>#}
-
-
-{#{% endblock %}#}

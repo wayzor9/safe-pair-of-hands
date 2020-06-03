@@ -5,7 +5,7 @@
             Witaj {{ request.user.first_name }}
             <ul class="dropdown">
               <li><a href="{% url 'core:profile' %}">Profil</a></li>
-              <li><a href="#">Ustawienia</a></li>
+              <li><a href="{% url 'password_change' %}">Ustawienia</a></li>
               <li><a href="{% url 'core:logout' %}">Wyloguj</a></li>
                 {% if request.user.is_staff %}
                 <li><a href="/admin/">Admin</a> </li>

@@ -40,6 +40,7 @@ $.ajaxSetup({
     }
 });
   </script>
+      <script src="https://kit.fontawesome.com/31e8b05626.js" crossorigin="anonymous"></script>
   </head>
 <body>
 
@@ -53,10 +54,13 @@ $.ajaxSetup({
         <h3>Formularz kontaktowy</h3>
         <form class="form--contact" method="post" action="{% url 'core:contact_form' %}">
             {% csrf_token %}
-            <div class="form-group form-group--50"><input type="text" name="name" placeholder="Imię" value="{{ form.name }}" /></div>
-            <div class="form-group form-group--50"><input type="text" name="surname" placeholder="Nazwisko" value="{{ form.surname }}" /></div>
-            <div class="form-group"><textarea name="message" placeholder="Wiadomość" rows="1">{{ form.message }}</textarea></div>
+            <div class="form-group form-group--50"><input type="text" name="name" placeholder="Imię"/></div>
+            <div class="form-group form-group--50"><input type="text" name="surname" placeholder="Nazwisko"/></div>
+            <div class="form-group"><textarea name="message" placeholder="Wiadomość" rows="1"></textarea></div>
           <button class="btn" type="submit">Wyślij</button>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
         </form>
       </div>
       <div class="bottom-line">

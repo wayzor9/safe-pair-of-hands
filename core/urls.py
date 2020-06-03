@@ -1,8 +1,7 @@
-from django.urls import path, include
+from django.urls import path
 from core.views import home, register, user_logout, add_donation, user_account, activate, contact_form, create_donation, \
-    form_confirmation
-from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, \
-    PasswordResetCompleteView
+    form_confirmation, donation_is_taken
+from django.contrib.auth.views import LoginView
 
 app_name = 'core'
 
@@ -30,5 +29,6 @@ urlpatterns = [
     path('form_confirmation/', form_confirmation, name = "form_confirmation"),
 
     path('profile/', user_account, name='profile'),
+    path('taken-item/<id>/', donation_is_taken, name="taken"),
 
 ]

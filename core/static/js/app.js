@@ -245,18 +245,14 @@ document.addEventListener("DOMContentLoaded", function() {
      */
 
     create_post(){
-      var form = $('#donation_form').serializeArray()
-      // var token =  $('input[name="csrfToken"]').attr('value');
-      // console.log(form);
-      console.log(form)
+      var MyForm = $('#donation_form').serializeArray()
+      console.log(MyForm);
 
       $.ajax({
-        data : form,
-        url : /create_donation/,
+        data : MyForm,
+        url : '/create_donation/',
         type : 'POST',
-        // headers: {
-        //   'X-CSRF-Token': token
-        // },
+        csrfmiddlewaretoken : $('input[name="csrfToken"]').attr('value'),
       })
     }
     submit(e) {
@@ -271,3 +267,7 @@ document.addEventListener("DOMContentLoaded", function() {
     new FormSteps(form);
   }
 });
+          // url = MyForm.attr('action')
+      // var $formData = $(this).serializeArray()
+      // var $thisUrl = $MyForm.attr('data-url')
+      // var token =  $('input[name="csrfToken"]').attr('value');
