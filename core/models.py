@@ -47,6 +47,7 @@ class Institution(models.Model):
     def __str__(self):
         return self.name
 
+
 class Donation(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     categories = models.ManyToManyField(Category)

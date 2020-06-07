@@ -88,23 +88,23 @@ def add_donation(request):
 def create_donation(request):
 
     if request.is_ajax() and request.method == 'POST':
+        print(request.POST)
 
         form = DonationForm(request.POST)
         categories_ids = request.POST.getlist('categories')
-        categories = Category.objects.get(id__in=categories_ids)
-        institution_id = request.POST.get('organization')
-        theInstitution = Institution.objects.get(pk=institution_id)
+        categories = Category.objects.filter(id__in=categories_ids)
+        # theInstitution = Institution.objects.get(pk=institution_id)
 
         if form.is_valid():
             donation = form.save(commit=False)
-            for cat in categories:
-                donation.categories.add(cat)
-            donation.institution.set(theInstitution)
+
             donation.user = request.user
             donation.save()
+            donation.categories.set(categories)
             return redirect('core:form_confirmation')
-
-        return redirect('core:profile')
+        else:
+            print(form.errors)
+    return redirect('core:profile')
 
 
 

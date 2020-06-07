@@ -69,5 +69,5 @@ class ContactForm(forms.Form):
 class DonationForm(forms.ModelForm):
     class Meta:
         model = Donation
-        fields = '__all__'
-        exclude = ['categories', 'institution', 'user']
+        # fields = '__all__'
+        exclude = ['user']
