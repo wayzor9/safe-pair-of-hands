@@ -253,6 +253,12 @@ document.addEventListener("DOMContentLoaded", function() {
         url : '/create_donation/',
         type : 'POST',
         csrfmiddlewaretoken : $('input[name="csrfToken"]').attr('value'),
+        success: function (response) {
+          if (response['success']){
+            window.location = '/form_confirmation/'
+          }
+
+        }
       })
     }
     submit(e) {

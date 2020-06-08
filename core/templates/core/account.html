@@ -19,55 +19,82 @@
 </div>
 
         <h2>Twoje Dary</h2>
-        <div >
-            <table>
-                <thead style="font-weight: bold">
-                <tr>
-                   <th> Liczba worków </th>
-                   <th>Beneficjent</th>
-                   <th>Kategoria</th>
-                   <th>Data odbioru</th>
-                   <th>Dodaj do archiwum</th>
-                </tr>
-                </thead>
-            <tbody>
-
-                {% for item in not_taken %}
+        <div>
+            <table style="border: 2px solid #ddd; width: 100%">
+                {% if not_taken %}
+                    <thead style="padding-top: 12px;
+                                  padding-bottom: 12px;
+                                  text-align: center;
+                                  background-color: gray;
+                                  color: white;
+                                  height: 40px">
                     <tr>
-                        <td>{{ item.quantity }}</td>
-                        <td> {{item.institution }}</td>
-                        <td> {% for category in item.categories.all %}<li>{{category| join:","}}</li>{% endfor %}</td>
-                        <td> {{item.pick_up_date }}</td>
-                        <td> <a href="{{ item.get_taken_item_url }}"><i class="fas fa-check"></i></a> </td>
+                        <th>Liczba worków </th>
+                        <th>Beneficjent</th>
+                        <th>Kategoria</th>
+                        <th>Data odbioru</th>
+                        <th>Dodaj do archiwum</th>
                     </tr>
-                {% empty %}
-                    <tr>
-                        <h4>Brak aktywnych darów!</h4>
-                    </tr>
-                {% endfor %}
-
-            {% for item in taken %}
-                {% if forloop.first %}
-                <tr style="text-align: center">
-                <td colspan=5><h1>Archiwum</h1></td>
-                </tr>
+                    </thead>
                 {% endif %}
-                <tr>
+                <tbody>
+                {% for item in not_taken %}
+                <tr style="color: black; text-align: center">
                     <td>{{ item.quantity }}</td>
                     <td> {{item.institution }}</td>
-                    <td> {% for category in item.categories.all %}<li>{{category| join:","}}</li>{% endfor %}</td>
+                    <td> {% for category in item.categories.all %}{{category|join:","}}{% endfor %}</td>
+                    <td> {{item.pick_up_date }}</td>
+                    <td><a href="{{ item.get_taken_item_url }}"><i style="color: green" class="fas fa-check"></i></a> </td>
+                </tr>
+            {% empty %}
+                <tr style="text-align: center">
+                    <td colspan="5"><h3>Brak oczekujących darów!</h3></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table><br>
+
+
+<table>
+        <tr style="text-align: center"><h3>Podsumowanie przekazanych darów</h3></tr>
+</table>
+
+
+            <table style="border: 2px solid #ddd; width: 100%">
+                {% if taken %}
+                    <thead style="padding-top: 12px;
+                                  padding-bottom: 12px;
+                                  text-align: center;
+                                  background-color: darkgrey;
+                                  color: white;
+                                  height: 40px">
+                    <tr>
+                       <th> Liczba worków </th>
+                       <th>Beneficjent</th>
+                       <th>Kategoria</th>
+                       <th>Data odbioru</th>
+                       <th>Status wysyłki</th>
+                    </tr>
+                    </thead>
+                {% endif %}
+
+                <tbody >
+                {% for item in taken %}
+
+                <tr style="text-align: center">
+                    <td>{{ item.quantity }}</td>
+                    <td> {{item.institution }}</td>
+                    <td> {% for category in item.categories.all %}{{category|join:","}}{% endfor %}</td>
                     <td> {{item.pick_up_date }}</td>
                     <td> Odebrano</td>
                 </tr>
             {% empty %}
-           <tr>
-               <h4>Brak darów w archiwum!</h4>
-           </tr>
-    {% endfor %}
-{#            </div>#}
-
+                 <tr style="text-align: center">
+                    <td colspan="5"><h3>Nie przekazano jeszcze żadnych darów.</h3></td>
+                </tr>
+            {% endfor %}
             </tbody>
-    </table>
+        </table>
     </div>
     </section>
 

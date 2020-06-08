@@ -1,0 +1,25 @@
+<table>
+    <tr>
+       <th>Liczba worków </th>
+       <th>Beneficjent</th>
+       <th>Kategoria</th>
+       <th>Data odbioru</th>
+        {% if obj.not_taken %}
+       <th>Dodaj do archiwum</th>{% else %}
+        <th>Status przesyłki</th>{% endif %}
+    </tr>
+    {% for snippet_var in objects %}
+    <td>{{ snippet_var.quantity }}</td>
+        <tr>
+            <td> {{snippet_var.institution }}</td>
+            <td> {% for category in snippet_var.categories.all %}{{category|join:","}}{% endfor %}</td>
+            <td> {{item.pick_up_date }}</td>
+            <td> <a href="{{ snippet_var.get_taken_item_url }}"><i class="fas fa-check"></i></a> </td>
+        </tr>
+        {% empty %}
+        <h4>Brak darów</h4>
+    {% endfor %}
+
+
+    <tr>Brak darów</tr>
+</table>

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail, EmailMessage
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_text
@@ -37,15 +37,17 @@ def register(request):
             email.send()
             messages.success(request, "Wysłaliśmy na Twój adres email link aktywacyjny do konta.")
             return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-            # messages.success(request, "Konto dla użytkownika " + new_user.first_name + ' zostało utworzone')
-            # return redirect('core:login')
+        else:
+            messages.error(request, 'Coś poszło nie tak. Spróbuj jeszcze raz.')
     else:
         user_form = UserRegistrationForm()
     return render(request,
                   'core/register.html',
                   {'user_form': user_form})
 
+
 def activate(request, uidb64, token):
+
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = CustomUser.objects.get(pk=uid)
@@ -62,8 +64,8 @@ def activate(request, uidb64, token):
         return HttpResponse('Link aktywacyjny jest nieważny')
 
 
-
 def user_logout(request):
+
     logout(request)
     return redirect('core:home')
 
@@ -76,61 +78,28 @@ def add_donation(request):
 
     form = DonationForm()
     categories = Category.objects.all()
-    # cat_ids = request.GET.getlist('category')
-    # institution_to_get = Institution.objects.filter(categories__id__in=cat_ids)
     institution_to_get = Institution.objects.all()
 
-
-    return render(request, 'core/form.html', {'form':form, 'categories': categories,
+    return render(request, 'core/form.html', {'form': form, 'categories': categories,
                                               'institution_to_get': institution_to_get})
 
 
 def create_donation(request):
 
     if request.is_ajax() and request.method == 'POST':
-        print(request.POST)
 
         form = DonationForm(request.POST)
         categories_ids = request.POST.getlist('categories')
         categories = Category.objects.filter(id__in=categories_ids)
-        # theInstitution = Institution.objects.get(pk=institution_id)
 
         if form.is_valid():
             donation = form.save(commit=False)
-
             donation.user = request.user
             donation.save()
             donation.categories.set(categories)
-            return redirect('core:form_confirmation')
+            return JsonResponse({'success': True})
         else:
-            print(form.errors)
-    return redirect('core:profile')
-
-
-
-        # else:
-        #     return render(request, 'core/form.html', {'form': form})
-
-
-            # quantity = request.POST.get('bags')
-            # address = request.POST.get('address')
-            # zip_code = request.POST.get('postcode')
-            # phone_number = request.POST.get('phone')
-            # pick_up_date = request.POST.get('data')
-            # pick_up_time = request.POST.get('time')
-            # pick_up_comment = request.POST.get('more_info')
-
-            #
-            # user = request.user
-            #
-            # donation = Donation.objects.create(quantity=quantity, address=address, phone_number=phone_number,
-            #                                    zip_code=zip_code, pick_up_date=pick_up_date, pick_up_time=pick_up_time,
-            #                                    pick_up_comment=pick_up_comment, institution=institution, user=user)
-
-            # categories_ids = request.POST.getlist('categories')
-            # categories = Category.objects.filter(id__in=categories_ids)
-            # donation.categories.set(categories)
-
+            return JsonResponse({'error': form.errors})
 
 
 def form_confirmation(request):
@@ -142,9 +111,8 @@ def user_account(request):
     user_detail_form = Donator(instance=user)
     user_donations = Donation.objects.filter(user=user)
 
-    taken = user_donations.filter(is_taken=True)
-    not_taken = user_donations.filter(is_taken=False)
-
+    taken = user_donations.filter(is_taken=True).order_by('pick_up_date')
+    not_taken = user_donations.filter(is_taken=False).order_by('pick_up_date')
 
     if request.method == 'POST':
         user_detail_form = Donator(request.POST, instance=user)
@@ -152,18 +120,21 @@ def user_account(request):
             user_detail_form.save()
 
     return render(request, 'core/account.html', {'form': user_detail_form, 'user_donations': user_donations,
-                                                 "taken":taken, "not_taken":not_taken})
+                                                 "taken": taken, "not_taken": not_taken})
 #     return Donation.objects.filter(user__user= self.request.user)
 
+
 def donation_is_taken(request, id):
+
     donation = Donation.objects.get(id=id)
     donation.is_taken = True
     donation.save()
     return redirect('core:profile')
 
+
 def contact_form(request):
 
-    form  = ContactForm()
+    form = ContactForm()
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -172,7 +143,7 @@ def contact_form(request):
             subject = f"Formularz kontaktowy od użytkownika: {cd['name']} {cd['surname']}"
             send_mail(subject, cd['message'], settings.EMAIL_HOST_USER,
                       superusers_emails)
-            return redirect('core:home')
+            return render(request, 'core/form-confirmation.html')
         else:
             messages.warning(request, 'Nie udało się wysłać formularza. Wszystkie pola muszą być wypełnione')
     return render(request, 'core/base.html', {'form':form})

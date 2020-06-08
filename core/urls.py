@@ -23,12 +23,9 @@ urlpatterns = [
 
     path('contact/', contact_form, name='contact_form'),
     path('', home, name='home'),
-    path('donation/', add_donation , name='donation'),
-    path('create_donation/', create_donation, name = 'create_donation'),
-
-    path('form_confirmation/', form_confirmation, name = "form_confirmation"),
-
+    path('donation/', add_donation, name='donation'),
+    path('create_donation/', create_donation, name='create_donation'),
+    path('form_confirmation/', form_confirmation, name="form_confirmation"),
     path('profile/', user_account, name='profile'),
     path('taken-item/<id>/', donation_is_taken, name="taken"),
-
 ]
