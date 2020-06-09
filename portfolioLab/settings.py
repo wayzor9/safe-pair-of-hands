@@ -121,6 +121,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGOUT_REDIRECT_URL = 'login'
+PASSWORD_CHANGE_URL = 'password_change'
 
 AUTH_USER_MODEL = 'core.CustomUser'
 

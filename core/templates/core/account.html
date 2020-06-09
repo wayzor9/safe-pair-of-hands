@@ -16,6 +16,11 @@
     <button type="submit" value="wyślij">Zmień dane</button>
          </div>
       </form>
+    <div style="color: green; font-weight: bold; padding-top: 10px">
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+    </div>
 </div>
 
         <h2>Twoje Dary</h2>

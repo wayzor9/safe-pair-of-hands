@@ -118,6 +118,7 @@ def user_account(request):
         user_detail_form = Donator(request.POST, instance=user)
         if user_detail_form.is_valid():
             user_detail_form.save()
+            messages.success(request, "Zmiany zapisane!")
 
     return render(request, 'core/account.html', {'form': user_detail_form, 'user_donations': user_donations,
                                                  "taken": taken, "not_taken": not_taken})

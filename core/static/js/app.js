@@ -235,6 +235,35 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$step.parentElement.hidden = this.currentStep >= 6;
 
       // TODO: get data from inputs and show them in summary
+      //
+      // $('#donation_form').on(this.currentStep=6, function () {
+      //   var that =$(this)
+      //
+      //
+      //
+      //
+      //   that.find('[]')
+      // })
+
+
+      // function getValue() {
+      //   var categories = document.getElementById('categories').value;
+      //   var quantity = document.getElementById('id_quantity').value;
+      //   var institution = document.getElementById('institution').value;
+      //   var address = document.getElementById('id_address').value;
+      //   var zip_code = document.getElementById('id_zip_code').value;
+      //   var phone = document.getElementById('id_phone_number').value;
+      //   var date = document.getElementById('id_pick_up_date').value;
+      //   var time = document.getElementById('id_pick_up_time').value;
+      //   var comment = document.getElementById('id_pick_up_comment').value;
+      //
+      //
+      //   var quantityB = document.getElementById('span_quantity')
+      //   quantityB.innerHTML= quantity
+      //
+      //   var institutionB = document.getElementById('span_institution')
+      //   institutionB.innerHTML= institution
+
 
 
     }
@@ -266,6 +295,7 @@ document.addEventListener("DOMContentLoaded", function() {
       this.currentStep++;
       this.create_post();
       this.updateForm();
+      console.log(this.create_post())
     }
   }
   const form = document.querySelector(".form--steps");
@@ -273,7 +303,3 @@ document.addEventListener("DOMContentLoaded", function() {
     new FormSteps(form);
   }
 });
-          // url = MyForm.attr('action')
-      // var $formData = $(this).serializeArray()
-      // var $thisUrl = $MyForm.attr('data-url')
-      // var token =  $('input[name="csrfToken"]').attr('value');
