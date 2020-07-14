@@ -1,4 +1,4 @@
-Safe pair of hands is a simple Django application which enable users to donate wide variety of consumer goods to charity fundations.
+# Safe Pair of Hands
 
 ![alt text](https://github.com/wayzor9/safe-pair-of-hands/blob/master/image/safe_hands.png)
 
