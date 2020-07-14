@@ -11,7 +11,7 @@
 
 ## General info
 Safe pair of hands is a simple Django application which enable users to donate wide variety of consumer goods to charity fundations.
-In order to ship the package, user needs to registrate to the application and fill in dontaion form.
+In order to ship the package, user needs to registrate to the application and fill in donation form.
 
 ## Technologies used
 - Django 3.0.6
@@ -24,4 +24,4 @@ In order to ship the package, user needs to registrate to the application and fi
 
 ## Refrences
 
-The project was developed under supervision of Coders Lab mentor. All statics files as well as front-end part of the project come from Coders Lab.
+The project was developed under supervision of CodersLab mentor. All statics files as well as front-end part of the project come from Coders Lab.
