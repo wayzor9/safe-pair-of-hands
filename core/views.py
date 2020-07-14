@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail, EmailMessage
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -9,9 +9,10 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib import messages
 
-from .models import Institution, Category, CustomUser, Donation
 from core.forms import UserRegistrationForm, Donator, ContactForm, DonationForm
+from .models import Institution, Category, CustomUser, Donation
 from .tokens import account_activation_token
+
 
 
 def register(request):
@@ -22,6 +23,7 @@ def register(request):
             new_user.set_password(
                 user_form.cleaned_data['password'])
             new_user.save()
+            # Sending an email with registration confirmation
             current_site = get_current_site(request)
             mail_subject = 'Aktywuj swoje konto na "Oddam w Dobre Ręce"'
             message = render_to_string('core/acc_active_email.html', {
@@ -38,7 +40,7 @@ def register(request):
             messages.success(request, "Wysłaliśmy na Twój adres email link aktywacyjny do konta.")
             return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
         else:
-            messages.error(request, 'Coś poszło nie tak. Spróbuj jeszcze raz.')
+            pass
     else:
         user_form = UserRegistrationForm()
     return render(request,
@@ -47,7 +49,7 @@ def register(request):
 
 
 def activate(request, uidb64, token):
-
+    #Registration confriamtion with token
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = CustomUser.objects.get(pk=uid)
@@ -71,7 +73,7 @@ def user_logout(request):
 
 
 def home(request):
-    return render(request, 'core/index.html', {} )
+    return render(request, 'core/index.html', {})
 
 
 def add_donation(request):
@@ -122,8 +124,6 @@ def user_account(request):
 
     return render(request, 'core/account.html', {'form': user_detail_form, 'user_donations': user_donations,
                                                  "taken": taken, "not_taken": not_taken})
-#     return Donation.objects.filter(user__user= self.request.user)
-
 
 def donation_is_taken(request, id):
 
