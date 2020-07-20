@@ -126,9 +126,9 @@ def user_account(request):
                                                  "taken": taken, "not_taken": not_taken})
 
 
-def donation_is_taken(request, id):
+def donation_is_taken(request, pk):
     # changing the donation status - from active to taken (collected by courier)
-    donation = Donation.objects.get(id=id)
+    donation = Donation.objects.get(id=pk)
     donation.is_taken = True
     donation.save()
     return redirect('core:profile')
