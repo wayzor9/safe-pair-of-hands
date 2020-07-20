@@ -1,19 +1,13 @@
-from django.contrib.auth import get_user_model
-from django.db import models
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
-
 from portfolioLab import settings
 from .managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
     username = None
-    email = models.EmailField(_('email address'), unique=True)
-
+    email = models.EmailField('email address', unique=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -41,7 +35,7 @@ class Institution(models.Model):
     name = models.CharField(max_length=100, null=False)
     description = models.TextField()
     type = models.CharField(choices=ORG_TYPES,
-                            default='Fundacja', max_length=15 )
+                            default='Fundacja', max_length=15)
     categories = models.ManyToManyField(Category)
 
     def __str__(self):
@@ -66,5 +60,5 @@ class Donation(models.Model):
 
     def get_taken_item_url(self):
         return reverse("core:taken", kwargs={
-            'id':self.id
+            'id': self.id
         })

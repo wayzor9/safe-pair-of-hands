@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail, EmailMessage
@@ -7,12 +8,11 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.contrib import messages
+from django.views.generic import TemplateView
 
 from core.forms import UserRegistrationForm, Donator, ContactForm, DonationForm
 from .models import Institution, Category, CustomUser, Donation
 from .tokens import account_activation_token
-
 
 
 def register(request):
@@ -25,7 +25,7 @@ def register(request):
             new_user.save()
             # Sending an email with registration confirmation
             current_site = get_current_site(request)
-            mail_subject = 'Aktywuj swoje konto na "Oddam w Dobre Ręce"'
+            mail_subject = 'Activate your account on "Oddam w Dobre Ręce"'
             message = render_to_string('core/acc_active_email.html', {
                 'user': new_user,
                 'domain': current_site.domain,
@@ -37,7 +37,7 @@ def register(request):
                 mail_subject, message, to=[to_email]
             )
             email.send()
-            messages.success(request, "Wysłaliśmy na Twój adres email link aktywacyjny do konta.")
+            messages.success(request, "Hello, we have just send you an email with an activation link")
             return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
         else:
             pass
@@ -49,7 +49,7 @@ def register(request):
 
 
 def activate(request, uidb64, token):
-    #Registration confriamtion with token
+    # Registration confirmation with token
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = CustomUser.objects.get(pk=uid)
@@ -60,10 +60,10 @@ def activate(request, uidb64, token):
         user.save()
         login(request, user)
         # return redirect('home')
-        messages.success(request, 'Dziękujemy za potwierdzenie. Możesz się zalogować')
+        messages.success(request, 'Thank you for your confirmation. Now you can sign in')
         return redirect('core:login')
     else:
-        return HttpResponse('Link aktywacyjny jest nieważny')
+        return HttpResponse('Activation link invalid')
 
 
 def user_logout(request):
@@ -72,8 +72,8 @@ def user_logout(request):
     return redirect('core:home')
 
 
-def home(request):
-    return render(request, 'core/index.html', {})
+class HomeView(TemplateView):
+    template_name = 'core/index.html'
 
 
 def add_donation(request):
@@ -120,13 +120,14 @@ def user_account(request):
         user_detail_form = Donator(request.POST, instance=user)
         if user_detail_form.is_valid():
             user_detail_form.save()
-            messages.success(request, "Zmiany zapisane!")
+            messages.success(request, "Changes saved successfully!")
 
     return render(request, 'core/account.html', {'form': user_detail_form, 'user_donations': user_donations,
                                                  "taken": taken, "not_taken": not_taken})
 
-def donation_is_taken(request, id):
 
+def donation_is_taken(request, id):
+    # changing the donation status - from active to taken (collected by courier)
     donation = Donation.objects.get(id=id)
     donation.is_taken = True
     donation.save()
@@ -134,17 +135,16 @@ def donation_is_taken(request, id):
 
 
 def contact_form(request):
-
     form = ContactForm()
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
             superusers_emails = CustomUser.objects.filter(is_superuser=True).values_list('email', flat=True)
-            subject = f"Formularz kontaktowy od użytkownika: {cd['name']} {cd['surname']}"
+            subject = f"Contact form from: {cd['name']} {cd['surname']}"
             send_mail(subject, cd['message'], settings.EMAIL_HOST_USER,
                       superusers_emails)
             return render(request, 'core/form-confirmation.html')
         else:
-            messages.warning(request, 'Nie udało się wysłać formularza. Wszystkie pola muszą być wypełnione')
-    return render(request, 'core/base.html', {'form':form})
+            messages.warning(request, 'Got error while sending a contact form. All fields required.')
+    return render(request, 'core/base.html', {'form': form})

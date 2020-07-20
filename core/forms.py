@@ -1,27 +1,6 @@
 from django import forms
-from django.contrib.auth import authenticate
-from django.contrib.auth.forms import AuthenticationForm
 
 from core.models import CustomUser, Donation
-
-
-# class LoginView(AuthenticationForm):
-#     email = forms.CharField()
-#     password = forms.CharField(widget=forms.PasswordInput)
-#
-#     def clean(self, *args, **kwargs):
-#         email = self.cleaned_data['email']
-#         password = self.cleaned_data['password']
-#
-#         if email and password:
-#             user = authenticate(email=email, password=password)
-#             if not user:
-#                 raise forms.ValidationError('Nie ma takiego użytkownika :(')
-#             if not user.check_password(password):
-#                 raise forms.ValidationError('Podany email lub hasło są niepoprawne')
-#             if not user.is_active:
-#                 raise forms.ValidationError('Użytkownik aktywny')
-#         return super(AuthenticationForm, self).clean(*args, **kwargs)
 
 
 class UserRegistrationForm(forms.ModelForm):
@@ -32,7 +11,7 @@ class UserRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ('first_name', 'last_name','email')
+        fields = ('first_name', 'last_name', 'email')
 
     def clean_password2(self, *args, **kwargs):
         cd = self.cleaned_data
@@ -62,12 +41,12 @@ class ContactForm(forms.Form):
         surname = cleaned_data.get("surname")
         message = cleaned_data.get("message")
         if not name and surname and message:
-                raise forms.ValidationError(
-                    'Wszystkie pola są wymagane')
+            raise forms.ValidationError(
+                'All fields required')
 
 
 class DonationForm(forms.ModelForm):
     class Meta:
         model = Donation
-        # fields = '__all__'
-        exclude = ['user']
+        fields = ("quantity", "categories", "institution", "address", "phone_number", "zip_code",
+                  "pick_up_date", "pick_up_time", "pick_up_comment", "is_taken")

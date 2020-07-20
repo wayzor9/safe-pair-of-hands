@@ -72,7 +72,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'charity2',
         'USER' : 'postgres',
-        'PASSWORD': 'coderslab',
+        'PASSWORD' : 'coderslab',
         'HOST' : 'localhost'
     }
 }
